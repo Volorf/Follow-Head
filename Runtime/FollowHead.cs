@@ -5,13 +5,13 @@ namespace Volorf.FollowHead
     public class FollowHead : MonoBehaviour
     {
         [Header("Offsets")]
-        [SerializeField] private float distanceFromHead;
-        [SerializeField] private float downOffset;
+        [SerializeField] private float distanceFromHead = 1f;
+        [SerializeField] private float downOffset = 0f;
         
         [Space(16)]
         [Header("Smoothness")]
-        [SerializeField] private float followHeadSmoothness = 0.3f;
-        [SerializeField] private float lookAtHeadSmoothness = 0.2f;
+        [SerializeField] private float followHeadSmoothness = 0.5f;
+        [SerializeField] private float lookAtHeadSmoothness = 0.5f;
         
         [Space(16)]
         [SerializeField] private bool canFollow = true;
