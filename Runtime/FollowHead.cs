@@ -4,9 +4,10 @@ namespace Volorf.FollowHead
 {
     public class FollowHead : MonoBehaviour
     {
-        [Header("Offsets")]
+        [Header("Positioning")]
         [SerializeField] private float distanceFromHead = 1f;
         [SerializeField] private float downOffset = 0f;
+        [SerializeField] private bool isMirrored = false;
         
         [Space(16)]
         [Header("Smoothness")]
@@ -48,7 +49,7 @@ namespace Volorf.FollowHead
             Vector3 newPos = CalculateSnackBarPosition();
             transform.position = Vector3.SmoothDamp(transform.position, newPos, ref _smoothPositionVelocity, followHeadSmoothness);
 
-            Vector3 newForward = (_camera.position - transform.position).normalized;
+            Vector3 newForward = (_camera.position - transform.position).normalized * (isMirrored ? 1f : -1f);
             transform.forward = Vector3.SmoothDamp(transform.forward, newForward, ref _smoothForwardVelocity, lookAtHeadSmoothness);
         }
     }
