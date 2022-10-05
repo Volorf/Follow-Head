@@ -16,7 +16,7 @@ namespace Volorf.FollowHead
         
         [Space(16)]
         [Header("Constraints")]
-        [SerializeField] private bool freezeYAxis = false;
+        [SerializeField] private bool freezeXAxisForLookingAtHead = false;
         [SerializeField] private bool stopUpdatingPosition = false;
         [SerializeField] private bool stopUpdatingDirection = false;
         
@@ -58,7 +58,7 @@ namespace Volorf.FollowHead
             if (!stopUpdatingDirection)
             {
                 Vector3 targetPosition = _camera.position;
-                if (freezeYAxis) targetPosition.y = transform.position.y;
+                if (freezeXAxisForLookingAtHead) targetPosition.y = transform.position.y;
                 
                 Vector3 newForward = (targetPosition - transform.position).normalized * (isMirrored ? 1f : -1f);
                 transform.forward = Vector3.SmoothDamp(transform.forward, newForward, ref _smoothForwardVelocity, lookAtHead);
