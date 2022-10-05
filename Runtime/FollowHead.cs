@@ -11,19 +11,22 @@ namespace Volorf.FollowHead
         
         [Space(16)]
         [Header("Smoothness")]
-        [SerializeField] private float followHeadSmoothness = 0.5f;
-        [SerializeField] private float lookAtHeadSmoothness = 0.5f;
+        [SerializeField] private float followHead = 0.5f;
+        [SerializeField] private float lookAtHead = 0.5f;
         
         [Space(16)]
-        [SerializeField] private bool canFollow = true;
+        [Header("Constraints")]
+        [SerializeField] private bool freezeYAxis = false;
+        [SerializeField] private bool stopUpdatingPosition = false;
+        [SerializeField] private bool stopUpdatingDirection = false;
         
+        private bool _canFollow = true;
         private Vector3 _smoothPositionVelocity;
         private Vector3 _smoothForwardVelocity;
         private Transform _camera;
-        
 
-        public void StopFollowingHead() => canFollow = false;
-        public void ResumeFollowingHead() => canFollow = true;
+        public void StopFollowingHead() => _canFollow = false;
+        public void ResumeFollowingHead() => _canFollow = true;
 
         private void Start()
         {
@@ -43,14 +46,23 @@ namespace Volorf.FollowHead
         }
 
         private void Update()
-        {
-            if (!canFollow) return;
-        
-            Vector3 newPos = CalculateSnackBarPosition();
-            transform.position = Vector3.SmoothDamp(transform.position, newPos, ref _smoothPositionVelocity, followHeadSmoothness);
+        { 
+            if (!_canFollow) return;
+            
+            if (!stopUpdatingPosition)
+            {
+                Vector3 newPos = CalculateSnackBarPosition();
+                transform.position = Vector3.SmoothDamp(transform.position, newPos, ref _smoothPositionVelocity, followHead);
+            }
 
-            Vector3 newForward = (_camera.position - transform.position).normalized * (isMirrored ? 1f : -1f);
-            transform.forward = Vector3.SmoothDamp(transform.forward, newForward, ref _smoothForwardVelocity, lookAtHeadSmoothness);
+            if (!stopUpdatingDirection)
+            {
+                Vector3 targetPosition = _camera.position;
+                if (freezeYAxis) targetPosition.y = transform.position.y;
+                
+                Vector3 newForward = (targetPosition - transform.position).normalized * (isMirrored ? 1f : -1f);
+                transform.forward = Vector3.SmoothDamp(transform.forward, newForward, ref _smoothForwardVelocity, lookAtHead);
+            }
         }
     }
 }
