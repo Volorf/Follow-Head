@@ -18,6 +18,7 @@ namespace Volorf.FollowHead
         [Header("Constraints")]
         [SerializeField] private bool freezeXAxisForLookingAtHead = false;
         [SerializeField] private bool stopUpdatingPosition = false;
+        [SerializeField] private bool lockYPositionUpdate = true;
         [SerializeField] private bool stopUpdatingDirection = false;
         
         private bool _canFollow = true;
@@ -27,6 +28,8 @@ namespace Volorf.FollowHead
 
         public void StopFollowingHead() => _canFollow = false;
         public void ResumeFollowingHead() => _canFollow = true;
+
+        private Vector3 _initialPos;
 
         private void Start()
         {
@@ -38,6 +41,9 @@ namespace Volorf.FollowHead
             {
                 Debug.LogWarning("Haven't found the Main Camera.\nCheck if there is a camera in your scene and it has the 'MainCamera' tag.");
             }
+
+            _initialPos = transform.position;
+            ProcessPositionAndRotation();
         }
     
         private Vector3 CalculateSnackBarPosition()
@@ -46,12 +52,18 @@ namespace Volorf.FollowHead
         }
 
         private void Update()
-        { 
+        {
+            ProcessPositionAndRotation();
+        }
+
+        private void ProcessPositionAndRotation()
+        {
             if (!_canFollow) return;
             
             if (!stopUpdatingPosition)
             {
                 Vector3 newPos = CalculateSnackBarPosition();
+                if (lockYPositionUpdate) newPos.y = _initialPos.y;
                 transform.position = Vector3.SmoothDamp(transform.position, newPos, ref _smoothPositionVelocity, followHead);
             }
 
