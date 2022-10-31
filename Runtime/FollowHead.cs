@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -5,9 +6,10 @@ namespace Volorf.FollowHead
 {
     public class FollowHead : MonoBehaviour
     {
-        [SerializeField] private float warnupDuration = 2f;
+        [SerializeField] private float warnupDuration = 0.1f;
+        [SerializeField] private bool keepConstantDistance = false;
         private bool _hasWarnupBeenFinished = false;
-        
+
         [Space(16)]
         [Header("Positioning")]
         [SerializeField] private float distanceFromCamera = 1f;
@@ -49,17 +51,29 @@ namespace Volorf.FollowHead
 
             StartCoroutine(Warnup(warnupDuration));
         }
-    
+
         private Vector3 CalculateSnackBarPosition()
         {
-            return _camera.position + _camera.forward * distanceFromCamera + _camera.up * (-1f * downOffset);
+            Vector3 forwardVec = _camera.forward;
+            
+            if (keepConstantDistance)
+            {
+                forwardVec = new Vector3(forwardVec.x, 0f, forwardVec.z).normalized;
+                // print("forwardVec: " + forwardVec);
+                lockYPositionUpdate = false;
+                // Debug.DrawLine(_camera.position, _camera.position + forwardVec, Color.red, 1f);
+            }
+
+            return _camera.position + forwardVec * distanceFromCamera + Vector3.up * (-1f * downOffset);
         }
 
         private void Update()
         {
             if (!_canFollow) return;
             if (!_hasWarnupBeenFinished) return;
+            
             ProcessPositionAndRotation();
+
         }
 
         private void ProcessPositionAndRotation()
