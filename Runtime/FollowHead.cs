@@ -53,17 +53,17 @@ namespace Volorf.FollowHead
 
         private void Update()
         {
-            ProcessPositionAndRotation(_canFollow, lockYPositionUpdate);
+            ProcessPositionAndRotation();
         }
 
-        private void ProcessPositionAndRotation(bool canFollow, bool didLockYPositionUpdate)
+        private void ProcessPositionAndRotation()
         {
-            if (!canFollow) return;
+            if (!_canFollow) return;
             
             if (!stopUpdatingPosition)
             {
                 Vector3 newPos = CalculateSnackBarPosition();
-                if (didLockYPositionUpdate) newPos.y = _initialPos.y;
+                if (lockYPositionUpdate) newPos.y = _initialPos.y;
                 transform.position = Vector3.SmoothDamp(transform.position, newPos, ref _smoothPositionVelocity, followHead);
             }
 
