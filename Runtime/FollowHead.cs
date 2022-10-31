@@ -1,9 +1,13 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Volorf.FollowHead
 {
     public class FollowHead : MonoBehaviour
     {
+        [SerializeField] private float warnupDuration = 2f;
+        private bool _hasWarnupBeenFinished = false;
+        
         [Space(16)]
         [Header("Positioning")]
         [SerializeField] private float distanceFromCamera = 1f;
@@ -42,8 +46,8 @@ namespace Volorf.FollowHead
             {
                 Debug.LogWarning("Haven't found the Main Camera.\nCheck if there is a camera in your scene and it has the 'MainCamera' tag.");
             }
-            
-            _initialPos = CalculateSnackBarPosition();
+
+            StartCoroutine(Warnup(warnupDuration));
         }
     
         private Vector3 CalculateSnackBarPosition()
@@ -53,13 +57,13 @@ namespace Volorf.FollowHead
 
         private void Update()
         {
+            if (!_canFollow) return;
+            if (!_hasWarnupBeenFinished) return;
             ProcessPositionAndRotation();
         }
 
         private void ProcessPositionAndRotation()
         {
-            if (!_canFollow) return;
-            
             if (!stopUpdatingPosition)
             {
                 Vector3 newPos = CalculateSnackBarPosition();
@@ -75,6 +79,13 @@ namespace Volorf.FollowHead
                 Vector3 newForward = (targetPosition - transform.position).normalized * (isMirrored ? 1f : -1f);
                 transform.forward = Vector3.SmoothDamp(transform.forward, newForward, ref _smoothForwardVelocity, lookAtHead);
             }
+        }
+
+        IEnumerator Warnup(float dur)
+        {
+            yield return new WaitForSeconds(dur);
+            _initialPos = CalculateSnackBarPosition();
+            _hasWarnupBeenFinished = true;
         }
     }
 }
