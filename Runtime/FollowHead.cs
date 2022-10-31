@@ -38,6 +38,16 @@ namespace Volorf.FollowHead
 
         private Vector3 _initialPos;
 
+        public void SetDownOffset(float o)
+        {
+            downOffset = o;
+        }
+
+        public void SetDistanceFromCamera(float d)
+        {
+            distanceFromCamera = d;
+        }
+
         private void Start()
         {
             if (Camera.main != null)
