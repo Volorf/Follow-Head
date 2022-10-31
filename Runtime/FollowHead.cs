@@ -4,8 +4,9 @@ namespace Volorf.FollowHead
 {
     public class FollowHead : MonoBehaviour
     {
+        [Space(16)]
         [Header("Positioning")]
-        [SerializeField] private float distanceFromHead = 1f;
+        [SerializeField] private float distanceFromCamera = 1f;
         [SerializeField] private float downOffset = 0f;
         [SerializeField] private bool isMirrored = false;
         
@@ -41,29 +42,28 @@ namespace Volorf.FollowHead
             {
                 Debug.LogWarning("Haven't found the Main Camera.\nCheck if there is a camera in your scene and it has the 'MainCamera' tag.");
             }
-
-            _initialPos = transform.position;
-            ProcessPositionAndRotation();
+            
+            _initialPos = CalculateSnackBarPosition();
         }
     
         private Vector3 CalculateSnackBarPosition()
         {
-            return _camera.position + _camera.forward * distanceFromHead + _camera.up * (-1f * downOffset);
+            return _camera.position + _camera.forward * distanceFromCamera + _camera.up * (-1f * downOffset);
         }
 
         private void Update()
         {
-            ProcessPositionAndRotation();
+            ProcessPositionAndRotation(_canFollow, lockYPositionUpdate);
         }
 
-        private void ProcessPositionAndRotation()
+        private void ProcessPositionAndRotation(bool canFollow, bool didLockYPositionUpdate)
         {
-            if (!_canFollow) return;
+            if (!canFollow) return;
             
             if (!stopUpdatingPosition)
             {
                 Vector3 newPos = CalculateSnackBarPosition();
-                if (lockYPositionUpdate) newPos.y = _initialPos.y;
+                if (didLockYPositionUpdate) newPos.y = _initialPos.y;
                 transform.position = Vector3.SmoothDamp(transform.position, newPos, ref _smoothPositionVelocity, followHead);
             }
 
