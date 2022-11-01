@@ -12,8 +12,8 @@ namespace Volorf.FollowHead
 
         [Space(16)]
         [Header("Positioning")]
-        [SerializeField] private float distanceFromCamera = 1f;
-        [SerializeField] private float downOffset = 0f;
+        public float DistanceFromCamera = 1f;
+        public float DownOffset = 0f;
         [SerializeField] private bool isMirrored = false;
         
         [Space(16)]
@@ -50,12 +50,12 @@ namespace Volorf.FollowHead
         
         public void SetDownOffset(float o)
         {
-            downOffset = o;
+            DownOffset = o;
         }
 
         public void SetDistanceFromCamera(float d)
         {
-            distanceFromCamera = d;
+            DistanceFromCamera = d;
         }
 
         private void Start()
@@ -84,7 +84,7 @@ namespace Volorf.FollowHead
                 // Debug.DrawLine(_camera.position, _camera.position + forwardVec, Color.red, 1f);
             }
 
-            return _camera.position + forwardVec * distanceFromCamera + Vector3.up * (-1f * downOffset);
+            return _camera.position + forwardVec * DistanceFromCamera + Vector3.up * (-1f * DownOffset);
         }
 
         private void Update()
