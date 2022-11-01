@@ -38,6 +38,16 @@ namespace Volorf.FollowHead
 
         private Vector3 _initialPos;
 
+        public void StopFollowing()
+        {
+            _canFollow = false;
+        }
+
+        public void ResumeFollowing()
+        {
+            _canFollow = true;
+        }
+        
         public void SetDownOffset(float o)
         {
             downOffset = o;
