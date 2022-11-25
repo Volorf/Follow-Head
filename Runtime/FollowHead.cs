@@ -122,11 +122,13 @@ namespace Volorf.FollowHead
             yield return new WaitForSeconds(dur);
             _initialPos = CalculateSnackBarPosition();
             _hasWarnupBeenFinished = true;
-
+            
             if (UpdateTransformAfterWarnUp)
             {
                 ProcessPositionAndRotation(false);
             }
+            
+            transform.position = _initialPos;
         }
     }
 }
