@@ -16,9 +16,9 @@ namespace Volorf.FollowHead
         public float DistanceFromCamera = 1f;
         public float DownOffset = 0f;
         [SerializeField] private bool isMirrored = false;
-        
-        [Space(16)]
-        [Header("Smoothness")]
+
+        [Space(16)] [Header("Smoothness")] 
+        public bool DoSmooth = true;
         [SerializeField] private float followHead = 0.5f;
         [SerializeField] private float lookAtHead = 0.5f;
         
@@ -93,17 +93,18 @@ namespace Volorf.FollowHead
             if (!_canFollow) return;
             if (!_hasWarnupBeenFinished) return;
             
-            ProcessPositionAndRotation();
+            ProcessPositionAndRotation(DoSmooth);
 
         }
 
-        private void ProcessPositionAndRotation()
+        private void ProcessPositionAndRotation(bool doSmooth)
         {
             if (!stopUpdatingPosition)
             {
                 Vector3 newPos = CalculateSnackBarPosition();
                 if (lockYPositionUpdate) newPos.y = _initialPos.y;
-                transform.position = Vector3.SmoothDamp(transform.position, newPos, ref _smoothPositionVelocity, followHead);
+                
+                transform.position = doSmooth ? Vector3.SmoothDamp(transform.position, newPos, ref _smoothPositionVelocity, followHead) : newPos;
             }
 
             if (!stopUpdatingDirection)
@@ -112,7 +113,7 @@ namespace Volorf.FollowHead
                 if (freezeXAxisForLookingAtHead) targetPosition.y = transform.position.y;
                 
                 Vector3 newForward = (targetPosition - transform.position).normalized * (isMirrored ? 1f : -1f);
-                transform.forward = Vector3.SmoothDamp(transform.forward, newForward, ref _smoothForwardVelocity, lookAtHead);
+                transform.forward = doSmooth ? Vector3.SmoothDamp(transform.forward, newForward, ref _smoothForwardVelocity, lookAtHead) : newForward;
             }
         }
 
@@ -124,7 +125,7 @@ namespace Volorf.FollowHead
 
             if (UpdateTransformAfterWarnUp)
             {
-                ProcessPositionAndRotation();
+                ProcessPositionAndRotation(false);
             }
         }
     }
