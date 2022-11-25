@@ -7,6 +7,7 @@ namespace Volorf.FollowHead
     public class FollowHead : MonoBehaviour
     {
         [SerializeField] private float warnupDuration = 0.1f;
+        [SerializeField] private bool UpdateTransformAfterWarnUp = true;
         [SerializeField] private bool keepConstantDistance = false;
         private bool _hasWarnupBeenFinished = false;
 
@@ -120,6 +121,11 @@ namespace Volorf.FollowHead
             yield return new WaitForSeconds(dur);
             _initialPos = CalculateSnackBarPosition();
             _hasWarnupBeenFinished = true;
+
+            if (UpdateTransformAfterWarnUp)
+            {
+                ProcessPositionAndRotation();
+            }
         }
     }
 }
