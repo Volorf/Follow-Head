@@ -10,14 +10,15 @@ namespace Volorf.FollowHead
         [SerializeField] private bool UpdateTransformAfterWarnUp = true;
         [SerializeField] private bool keepConstantDistance = false;
         private bool _hasWarnupBeenFinished = false;
-
+        
         [Space(16)]
         [Header("Positioning")]
         public float DistanceFromCamera = 1f;
         public float DownOffset = 0f;
         [SerializeField] private bool isMirrored = false;
 
-        [Space(16)] [Header("Smoothness")] 
+        [Space(16)] [Header("Animation")] 
+        [SerializeField] private bool IsFollowingHead;
         public bool DoSmooth = true;
         [SerializeField] private float followHead = 0.5f;
         [SerializeField] private float lookAtHead = 0.5f;
@@ -90,7 +91,7 @@ namespace Volorf.FollowHead
 
         private void Update()
         {
-            if (!_canFollow) return;
+            if (!_canFollow || !IsFollowingHead) return;
             if (!_hasWarnupBeenFinished) return;
             
             ProcessPositionAndRotation(DoSmooth);
