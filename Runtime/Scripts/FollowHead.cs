@@ -15,6 +15,7 @@ namespace Volorf.FollowHead
         [SerializeField] private float warnupShowAnimDur = 1f;
         [SerializeField] private AnimationCurve warnupShowAnimCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
         private bool _hasWarnupBeenFinished = false;
+        [SerializeField] private UnityEvent onBeforeWarnUp;
         [SerializeField] private UnityEvent onAfterWarnUp;
 
         [Space(16)]
@@ -143,6 +144,8 @@ namespace Volorf.FollowHead
             transform.position = _initialPos;
 
             float timer = 0f;
+            
+            onBeforeWarnUp.Invoke();
 
             while (timer <= animDur)
             {
