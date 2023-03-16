@@ -1,18 +1,23 @@
 using System;
 using System.Collections;
+using System.Numerics;
 using UnityEngine;
+using Vector3 = UnityEngine.Vector3;
 
 namespace Volorf.FollowHead
 {
     public class FollowHead : MonoBehaviour
     {
+        [Header("Warn up")]
         [SerializeField] private float warnupDuration = 0.1f;
         [SerializeField] private bool UpdateTransformAfterWarnUp = true;
-        [SerializeField] private bool keepConstantDistance = false;
+        [SerializeField] private float warnupShowAnimDur = 1f;
+        [SerializeField] private AnimationCurve warnupShowAnimCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
         private bool _hasWarnupBeenFinished = false;
         
         [Space(16)]
         [Header("Positioning")]
+        [SerializeField] private bool keepConstantDistance = false;
         public float DistanceFromCamera = 1f;
         public float DownOffset = 0f;
         [SerializeField] private bool isMirrored = false;
@@ -39,6 +44,7 @@ namespace Volorf.FollowHead
         public void ResumeFollowingHead() => _canFollow = true;
 
         private Vector3 _initialPos;
+        private Vector3 _initialScale;
 
         public void StopFollowing()
         {
@@ -62,6 +68,8 @@ namespace Volorf.FollowHead
 
         private void Start()
         {
+            _initialScale = transform.localScale;
+            
             if (Camera.main != null)
             {
                 _camera = Camera.main.transform;
@@ -71,7 +79,7 @@ namespace Volorf.FollowHead
                 Debug.LogWarning("Haven't found the Main Camera.\nCheck if there is a camera in your scene and it has the 'MainCamera' tag.");
             }
 
-            StartCoroutine(Warnup(warnupDuration));
+            StartCoroutine(Warnup(warnupDuration, warnupShowAnimDur));
         }
 
         private Vector3 CalculateSnackBarPosition()
@@ -118,9 +126,10 @@ namespace Volorf.FollowHead
             }
         }
 
-        IEnumerator Warnup(float dur)
+        IEnumerator Warnup(float delay, float animDur)
         {
-            yield return new WaitForSeconds(dur);
+            transform.localScale = Vector3.zero;
+            yield return new WaitForSeconds(delay);
             _initialPos = CalculateSnackBarPosition();
             _hasWarnupBeenFinished = true;
             
@@ -130,6 +139,18 @@ namespace Volorf.FollowHead
             }
             
             transform.position = _initialPos;
+
+            float timer = 0f;
+
+            while (timer <= animDur)
+            {
+                timer += Time.deltaTime;
+                float koef = timer / animDur;
+                float curvedKoef = warnupShowAnimCurve.Evaluate(koef);
+                Vector3 newScale = Vector3.Lerp(Vector3.zero, _initialScale, curvedKoef);
+                transform.localScale = newScale;
+                yield return null;
+            }
         }
     }
 }
