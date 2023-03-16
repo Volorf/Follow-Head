@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Numerics;
 using UnityEngine;
+using UnityEngine.Events;
 using Vector3 = UnityEngine.Vector3;
 
 namespace Volorf.FollowHead
@@ -14,7 +15,8 @@ namespace Volorf.FollowHead
         [SerializeField] private float warnupShowAnimDur = 1f;
         [SerializeField] private AnimationCurve warnupShowAnimCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
         private bool _hasWarnupBeenFinished = false;
-        
+        [SerializeField] private UnityEvent onAfterWarnUp;
+
         [Space(16)]
         [Header("Positioning")]
         [SerializeField] private bool keepConstantDistance = false;
@@ -151,6 +153,8 @@ namespace Volorf.FollowHead
                 transform.localScale = newScale;
                 yield return null;
             }
+            
+            onAfterWarnUp.Invoke();
         }
     }
 }
