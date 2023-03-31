@@ -9,6 +9,8 @@ namespace Volorf.FollowHead
 {
     public class FollowHead : MonoBehaviour
     {
+        [SerializeField] private Transform targetToFollow;
+        
         [Header("Warn up")]
         [SerializeField] private float warnupDuration = 0.1f;
         [SerializeField] private bool UpdateTransformAfterWarnUp = true;
@@ -75,7 +77,7 @@ namespace Volorf.FollowHead
             
             if (Camera.main != null)
             {
-                _camera = Camera.main.transform;
+                _camera = targetToFollow;
             }
             else
             {
