@@ -10,8 +10,9 @@ namespace Volorf.FollowHead
     public class FollowHead : MonoBehaviour
     {
         [SerializeField] private Transform targetToFollow;
-        
-        [Header("Warn up")]
+
+        [Header("Warn up")] 
+        [SerializeField] private bool doWarnup = true;
         [SerializeField] private float warnupDuration = 0.1f;
         [SerializeField] private bool UpdateTransformAfterWarnUp = true;
         [SerializeField] private float warnupShowAnimDur = 1f;
@@ -83,8 +84,8 @@ namespace Volorf.FollowHead
             {
                 Debug.LogWarning("Haven't found the Main Camera.\nCheck if there is a camera in your scene and it has the 'MainCamera' tag.");
             }
-
-            StartCoroutine(Warnup(warnupDuration, warnupShowAnimDur));
+            
+            if (doWarnup) StartCoroutine(Warnup(warnupDuration, warnupShowAnimDur));
         }
 
         private Vector3 CalculateSnackBarPosition()
